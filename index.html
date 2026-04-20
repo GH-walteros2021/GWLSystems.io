@@ -1,0 +1,2188 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GWL Systems | Software de Productividad Profesional</title>
+    <link rel="icon" type="image/png" href="logo5.png">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --bg: #05080F;
+            --bg-card: rgba(10, 15, 28, 0.85);
+            --bg-surface: #0A0F1C;
+            --bg-elevated: rgba(20, 30, 60, 0.6);
+            --text: #E8ECF4;
+            --text-secondary: #8892A8;
+            --text-muted: #5A6478;
+            --border: rgba(147, 51, 234, 0.08);
+            --border-hover: rgba(192, 38, 211, 0.2);
+
+            /* Primary palette inspired by landing_colors.jpg */
+            --blue: #1E40AF;
+            --blue-light: rgba(30, 64, 175, 0.12);
+            --blue-glow: rgba(30, 64, 175, 0.25);
+            --cyan: #38BDF8;
+            --cyan-light: rgba(56, 189, 248, 0.1);
+            --purple: #9333EA;
+            --purple-light: rgba(147, 51, 234, 0.12);
+            --purple-deep: #6B21A8;
+            --red: #DC2626;
+            --red-light: rgba(220, 38, 38, 0.1);
+            --orange: #EA580C;
+            --orange-light: rgba(234, 88, 12, 0.12);
+            --green: #10B981;
+            --green-light: rgba(16, 185, 129, 0.12);
+            --amber: #F59E0B;
+            --amber-light: rgba(245, 158, 11, 0.12);
+            --warm-accent: #C026D3;
+            --warm-glow: rgba(192, 38, 211, 0.2);
+
+            --radius: 12px;
+            --radius-lg: 20px;
+            --radius-xl: 28px;
+
+            /* ═══════════════════════════════════════════════
+               HERO CONTROLS — Ajusta estos valores para
+               personalizar la imagen de fondo del hero
+            ═══════════════════════════════════════════════ */
+            /* Zoom: 1 = tamaño real, 0.85 = alejado, 1.2 = acercado */
+            --hero-scale: 1;
+            /* Posición vertical: 0% = arriba, 50% = centro, 100% = abajo */
+            --hero-position-y: 35%;
+            /* Posición horizontal: 0% = izquierda, 50% = centro, 100% = derecha */
+            --hero-position-x: 50%;
+            /* Oscuridad general del overlay: 0 = sin overlay, 1 = negro total */
+            --hero-overlay-tint: 0.05;
+            /* Gradiente superior (legibilidad del navbar): 0 a 1 */
+            --hero-top-gradient: 0.75;
+            /* Gradiente inferior (transición al contenido): 0 a 1 */
+            --hero-bottom-gradient: 0.95;
+            /* Viñeta central (legibilidad del texto): 0 a 1 */
+            --hero-vignette: 0.15;
+            /* Viñetas laterales: 0 a 1 */
+            --hero-side-vignette: 0.35;
+            /* Intensidad de la animación Ken Burns (zoom): 1.06 = sutil, 1.15 = notorio */
+            --hero-kb-intensity: 1.04;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .mono {
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        img {
+            max-width: 100%;
+            display: block;
+        }
+
+        /* ===== Scrollbar ===== */
+        ::-webkit-scrollbar {
+            width: 6px
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg)
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--purple);
+            border-radius: 3px
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--warm-accent)
+        }
+
+        /* ===== Animations ===== */
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px)
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0)
+            }
+        }
+
+        @keyframes kenBurns {
+            0% {
+                transform: scale(var(--hero-scale)) translate(0, 0)
+            }
+
+            33% {
+                transform: scale(calc(var(--hero-scale) * var(--hero-kb-intensity))) translate(-0.8%, -0.5%)
+            }
+
+            66% {
+                transform: scale(calc(var(--hero-scale) * 1.03)) translate(0.4%, -0.3%)
+            }
+
+            100% {
+                transform: scale(var(--hero-scale)) translate(0, 0)
+            }
+        }
+
+        @keyframes pulseGlow {
+
+            0%,
+            100% {
+                box-shadow: 0 0 20px var(--warm-glow), 0 0 40px rgba(147, 51, 234, .08)
+            }
+
+            50% {
+                box-shadow: 0 0 35px var(--warm-glow), 0 0 70px rgba(147, 51, 234, .15)
+            }
+        }
+
+        @keyframes scanLine {
+            0% {
+                transform: translateY(-100%)
+            }
+
+            100% {
+                transform: translateY(100vh)
+            }
+        }
+
+        @keyframes borderShimmer {
+            0% {
+                background-position: 0% 50%
+            }
+
+            50% {
+                background-position: 100% 50%
+            }
+
+            100% {
+                background-position: 0% 50%
+            }
+        }
+
+        .fade-up {
+            animation: fadeUp .7s ease-out forwards;
+            opacity: 0
+        }
+
+        /* ===== Glass ===== */
+        .glass {
+            background: rgba(10, 15, 28, 0.65);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(147, 51, 234, 0.1);
+        }
+
+        /* ===== Gradients ===== */
+        .text-gradient-blue {
+            background: linear-gradient(135deg, #1E40AF 0%, #38BDF8 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .text-gradient-warm {
+            background: linear-gradient(135deg, #38BDF8 0%, #C026D3 50%, #EA580C 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .text-gradient-fire {
+            background: linear-gradient(135deg, #EA580C 0%, #DC2626 50%, #F59E0B 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .text-gradient-purple {
+            background: linear-gradient(135deg, #9333EA 0%, #C026D3 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* ===== Nav ===== */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 100;
+            transition: all .4s ease;
+            padding: 1.25rem 0;
+        }
+
+        nav.scrolled {
+            padding: .7rem 0;
+            background: rgba(5, 8, 15, 0.92);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .nav-inner {
+            max-width: 1140px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            color: var(--text)
+        }
+
+        .nav-brand-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1px solid rgba(147, 51, 234, .2)
+        }
+
+        .nav-brand-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover
+        }
+
+        .nav-brand span {
+            font-weight: 700;
+            font-size: 1.05rem;
+            letter-spacing: -.3px;
+            color: #fff
+        }
+
+        .nav-brand small {
+            display: block;
+            font-size: 10px;
+            color: var(--warm-accent);
+            font-weight: 600;
+            letter-spacing: 1.5px;
+            text-transform: uppercase
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 1.75rem
+        }
+
+        .nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: color .2s
+        }
+
+        .nav-links a:hover {
+            color: #fff
+        }
+
+        .btn-nav {
+            padding: 9px 20px;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 700;
+            border: none;
+            cursor: pointer;
+            font-family: inherit;
+            transition: all .25s
+        }
+
+        .btn-blue {
+            background: linear-gradient(135deg, #1E40AF, #9333EA);
+            color: #fff
+        }
+
+        .btn-blue:hover {
+            background: linear-gradient(135deg, #1E3A8A, #7C3AED);
+            transform: translateY(-1px);
+            box-shadow: 0 8px 20px var(--warm-glow)
+        }
+
+        .lang-toggle {
+            padding: 7px 14px;
+            border-radius: 8px;
+            background: var(--bg-elevated);
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: inherit;
+            transition: all .2s;
+            display: flex;
+            align-items: center;
+            gap: 6px
+        }
+
+        .lang-toggle:hover {
+            border-color: var(--warm-accent);
+            color: var(--warm-accent)
+        }
+
+        .mobile-toggle {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 22px;
+            cursor: pointer;
+            color: #fff
+        }
+
+        .mobile-nav {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(5, 8, 15, .98);
+            backdrop-filter: blur(20px);
+            z-index: 200;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 2rem
+        }
+
+        .mobile-nav.open {
+            display: flex
+        }
+
+        .mobile-nav a {
+            color: #fff;
+            text-decoration: none;
+            font-size: 1.25rem;
+            font-weight: 600
+        }
+
+        .mobile-close {
+            position: absolute;
+            top: 1.25rem;
+            right: 1.5rem;
+            background: none;
+            border: none;
+            font-size: 28px;
+            cursor: pointer;
+            color: #fff
+        }
+
+        /* ===== HERO (solo imagen) ===== */
+        .hero {
+            position: relative;
+            min-height: 100vh;
+            min-height: 100dvh;
+            overflow: hidden;
+        }
+
+        .hero-bg {
+            position: absolute;
+            inset: 0;
+            z-index: 0;
+            background: #05080F;
+        }
+
+        .hero-bg img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: var(--hero-position-x) var(--hero-position-y);
+            transform: scale(var(--hero-scale));
+            transform-origin: center center;
+            animation: kenBurns 25s ease-in-out infinite;
+        }
+
+        .hero-overlay {
+            position: absolute;
+            inset: 0;
+            z-index: 1;
+            background:
+                linear-gradient(180deg, rgba(5, 8, 15, var(--hero-top-gradient)) 0%, rgba(5, 8, 15, calc(var(--hero-top-gradient)*0.3)) 12%, transparent 30%),
+                linear-gradient(0deg, rgba(5, 8, 15, var(--hero-bottom-gradient)) 0%, rgba(5, 8, 15, calc(var(--hero-bottom-gradient)*0.6)) 10%, transparent 35%),
+                radial-gradient(ellipse at 0% 50%, rgba(5, 8, 15, var(--hero-side-vignette)) 0%, transparent 50%),
+                radial-gradient(ellipse at 100% 50%, rgba(5, 8, 15, var(--hero-side-vignette)) 0%, transparent 50%),
+                rgba(5, 8, 15, var(--hero-overlay-tint));
+        }
+
+        .hero-scanline {
+            position: absolute;
+            inset: 0;
+            z-index: 1;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .hero-scanline::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, rgba(0, 212, 255, .04), transparent);
+            animation: scanLine 8s linear infinite;
+        }
+
+        /* Scroll Indicator inside hero */
+        .scroll-ind {
+            position: absolute;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10
+        }
+
+        .scroll-ind div {
+            width: 24px;
+            height: 38px;
+            border-radius: 12px;
+            border: 2px solid rgba(0, 212, 255, .35);
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            padding-top: 8px
+        }
+
+        .scroll-ind div span {
+            width: 3px;
+            height: 8px;
+            border-radius: 2px;
+            background: #00D4FF;
+            display: block;
+            animation: fadeUp 1.5s ease-in-out infinite
+        }
+
+        /* ===== BACKGROUND IMAGE for sections ===== */
+        .bg-scene {
+            position: relative;
+        }
+
+        .bg-scene::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: url('background.png') center top / cover no-repeat fixed;
+            opacity: 0.18;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .bg-scene::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background:
+                radial-gradient(ellipse at center, rgba(5, 8, 15, .55) 0%, rgba(5, 8, 15, .85) 100%),
+                linear-gradient(180deg, rgba(5, 8, 15, .7) 0%, transparent 20%, transparent 80%, rgba(5, 8, 15, .7) 100%);
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .bg-scene>* {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* ===== INTRO SECTION (debajo del hero) ===== */
+        .intro-section {
+            padding: 5rem 1.5rem 4rem;
+        }
+
+        .intro-title {
+            font-size: clamp(2.5rem, 5.5vw, 4.2rem);
+            font-weight: 800;
+            line-height: 1.12;
+            letter-spacing: -.5px;
+            margin-bottom: 1.25rem;
+            color: #fff
+        }
+
+        .intro-title em {
+            font-style: normal
+        }
+
+        .intro-sub {
+            font-size: clamp(1rem, 2vw, 1.15rem);
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto 2.5rem;
+            line-height: 1.75
+        }
+
+        .intro-btns {
+            display: flex;
+            flex-wrap: wrap;
+            gap: .75rem;
+            justify-content: center;
+            margin-bottom: 3.5rem
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 20px;
+            border-radius: 50px;
+            margin-bottom: 2rem
+        }
+
+        .hero-badge span {
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: var(--cyan)
+        }
+
+        .btn-hero-primary {
+            padding: 16px 32px;
+            border-radius: 14px;
+            font-size: 16px;
+            font-weight: 700;
+            border: none;
+            cursor: pointer;
+            font-family: inherit;
+            background: linear-gradient(135deg, #1E40AF 0%, #9333EA 100%);
+            color: #fff;
+            transition: all .3s;
+            animation: pulseGlow 3s ease-in-out infinite;
+        }
+
+        .btn-hero-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 30px var(--warm-glow)
+        }
+
+        .btn-hero-secondary {
+            padding: 16px 32px;
+            border-radius: 14px;
+            font-size: 16px;
+            font-weight: 600;
+            border: 1px solid rgba(147, 51, 234, .3);
+            cursor: pointer;
+            font-family: inherit;
+            background: rgba(10, 15, 28, .5);
+            color: #fff;
+            transition: all .3s;
+        }
+
+        .btn-hero-secondary:hover {
+            border-color: var(--warm-accent);
+            color: var(--cyan);
+            transform: translateY(-1px)
+        }
+
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            max-width: 700px;
+            margin: 0 auto
+        }
+
+        .stat-card {
+            border-radius: var(--radius);
+            padding: 1.1rem;
+            text-align: center
+        }
+
+        .stat-num {
+            font-size: clamp(1.5rem, 3vw, 2rem);
+            font-weight: 800
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-top: 2px;
+            font-weight: 500
+        }
+
+        /* ===== Sections ===== */
+        section {
+            padding: 5.5rem 1.5rem
+        }
+
+        .section-inner {
+            max-width: 1140px;
+            margin: 0 auto
+        }
+
+        .section-tag {
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--warm-accent)
+        }
+
+        .section-title {
+            font-size: clamp(1.75rem, 3.5vw, 2.5rem);
+            font-weight: 800;
+            line-height: 1.15;
+            letter-spacing: -.3px;
+            margin-top: .5rem;
+            margin-bottom: .75rem;
+            color: #fff
+        }
+
+        .section-sub {
+            color: var(--text-secondary);
+            font-size: 1.05rem;
+            max-width: 560px;
+            line-height: 1.75
+        }
+
+        .section-divider {
+            height: 1px;
+            max-width: 800px;
+            margin: 0 auto;
+            background: linear-gradient(90deg, transparent, rgba(147, 51, 234, .15), rgba(234, 88, 12, .1), transparent)
+        }
+
+        /* ===== Product Cards ===== */
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.25rem;
+            margin-top: 2.5rem
+        }
+
+        .p-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            transition: all .45s cubic-bezier(.23, 1, .32, 1);
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+
+        .p-card:hover {
+            transform: translateY(-8px);
+            border-color: var(--border-hover);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, .4), 0 0 30px rgba(147, 51, 234, .08)
+        }
+
+        /* Product screenshot preview */
+        .p-card-img {
+            position: relative;
+            width: 100%;
+            height: 200px;
+            overflow: hidden;
+            background: rgba(5, 8, 15, 0.5);
+        }
+        .p-card-img img {
+            width: 100%; height: 100%;
+            object-fit: cover;
+            object-position: center top;
+            transition: transform 0.6s ease, filter 0.6s ease;
+            filter: brightness(0.85);
+        }
+        .p-card:hover .p-card-img img {
+            transform: scale(1.05);
+            filter: brightness(1);
+        }
+        .p-card-img-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg, transparent 40%, rgba(10,15,28,0.95) 100%);
+            pointer-events: none;
+        }
+
+        /* Card body (content below image) */
+        .p-card-body {
+            padding: 1.5rem 1.75rem 1.75rem;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+        }
+
+        /* Icon as image instead of emoji */
+        .p-icon-wrap {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+        .p-icon-wrap img {
+            width: 100%; height: 100%;
+            object-fit: cover;
+            border-radius: 12px;
+        }
+
+        .p-card .accent-line {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background-size: 200% 100%;
+            animation: borderShimmer 4s ease infinite
+        }
+
+        .p-card-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            margin-bottom: 1rem
+        }
+
+        .p-tag {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: .3px;
+            text-transform: uppercase
+        }
+
+        .p-card h3 {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 4px;
+            color: #fff
+        }
+
+        .p-card .version {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-bottom: .75rem
+        }
+
+        .p-card .desc {
+            font-size: 14px;
+            color: var(--text-secondary);
+            line-height: 1.7;
+            margin-bottom: 1.25rem;
+            flex-grow: 1
+        }
+
+        .feat-list {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            margin-bottom: 1.25rem
+        }
+
+        .feat-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            color: var(--text-secondary)
+        }
+
+        .feat-check {
+            flex-shrink: 0;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            color: #fff;
+            font-weight: 700
+        }
+
+        .p-price-row {
+            display: flex;
+            align-items: baseline;
+            gap: 8px;
+            margin-bottom: 1rem
+        }
+
+        .p-price {
+            font-size: 1.75rem;
+            font-weight: 800
+        }
+
+        .p-price-usd {
+            font-size: 13px;
+            color: var(--text-muted);
+            font-weight: 500
+        }
+
+        .btn-buy {
+            width: 100%;
+            padding: 14px;
+            border-radius: var(--radius);
+            font-size: 15px;
+            font-weight: 700;
+            border: none;
+            cursor: pointer;
+            font-family: inherit;
+            transition: all .3s;
+            color: #fff
+        }
+
+        .btn-buy:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(147, 51, 234, .3)
+        }
+
+        /* ===== Coupon ===== */
+        .coupon-wrap {
+            text-align: center;
+            margin-top: 1.5rem
+        }
+
+        .coupon-box {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 14px;
+            border-radius: 10px;
+            background: var(--bg-elevated);
+            border: 1px solid var(--border)
+        }
+
+        .coupon-box input {
+            background: transparent;
+            border: none;
+            outline: none;
+            color: var(--text);
+            font-family: inherit;
+            font-size: 14px;
+            width: 150px;
+            text-transform: uppercase
+        }
+
+        .coupon-box input::placeholder {
+            color: var(--text-muted)
+        }
+
+        .coupon-box button {
+            background: var(--blue);
+            color: #fff;
+            font-weight: 600;
+            border: none;
+            padding: 7px 16px;
+            border-radius: 8px;
+            font-size: 13px;
+            cursor: pointer;
+            font-family: inherit;
+            transition: all .2s
+        }
+
+        .coupon-box button:hover {
+            background: #1D4ED8
+        }
+
+        .coupon-ok {
+            display: none;
+            margin-top: .75rem;
+            padding: 8px 18px;
+            border-radius: 8px;
+            background: var(--green-light);
+            border: 1px solid rgba(16, 185, 129, .2);
+            color: var(--green);
+            font-weight: 600;
+            font-size: 13px
+        }
+
+        /* ===== SMART Section ===== */
+        .smart-section {
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .smart-section .section-tag {
+            color: var(--warm-accent)
+        }
+
+        .smart-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3.5rem;
+            align-items: center
+        }
+
+        .smart-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px
+        }
+
+        .smart-item {
+            padding: 1.25rem;
+            border-radius: var(--radius);
+            background: var(--bg-elevated);
+            border: 1px solid var(--border);
+            transition: all .35s
+        }
+
+        .smart-item:hover {
+            background: rgba(147, 51, 234, .08);
+            border-color: rgba(147, 51, 234, .2);
+            transform: translateY(-4px)
+        }
+
+        .smart-item .s-icon {
+            font-size: 24px;
+            margin-bottom: .5rem
+        }
+
+        .smart-item h4 {
+            font-size: 14px;
+            font-weight: 700;
+            margin-bottom: 4px;
+            color: #fff
+        }
+
+        .smart-item p {
+            font-size: 12px;
+            color: var(--text-muted);
+            line-height: 1.5
+        }
+
+        .btn-smart {
+            padding: 14px 28px;
+            border-radius: var(--radius);
+            font-size: 15px;
+            font-weight: 700;
+            border: none;
+            cursor: pointer;
+            font-family: inherit;
+            background: linear-gradient(135deg, #9333EA, #EA580C);
+            color: #fff;
+            transition: all .3s
+        }
+
+        .btn-smart:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 30px rgba(147, 51, 234, .3)
+        }
+
+        .btn-smart-ghost {
+            padding: 14px 28px;
+            border-radius: var(--radius);
+            font-size: 15px;
+            font-weight: 600;
+            border: 1px solid rgba(147, 51, 234, .3);
+            cursor: pointer;
+            font-family: inherit;
+            background: transparent;
+            color: #fff;
+            transition: all .3s
+        }
+
+        .btn-smart-ghost:hover {
+            border-color: rgba(147, 51, 234, .6);
+            background: rgba(147, 51, 234, .06)
+        }
+
+        /* ===== Steps ===== */
+        .steps-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.25rem;
+            margin-top: 2.5rem
+        }
+
+        .step-card {
+            text-align: center;
+            padding: 2rem 1.25rem;
+            border-radius: var(--radius-lg);
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            transition: all .35s
+        }
+
+        .step-card:hover {
+            border-color: var(--border-hover);
+            transform: translateY(-6px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, .3)
+        }
+
+        .step-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            background: var(--purple-light);
+            color: var(--warm-accent);
+            font-size: 13px;
+            font-weight: 700;
+            margin-bottom: 1rem
+        }
+
+        .step-icon {
+            font-size: 2rem;
+            margin-bottom: .75rem
+        }
+
+        .step-card h4 {
+            font-size: 15px;
+            font-weight: 700;
+            margin-bottom: .5rem;
+            color: #fff
+        }
+
+        .step-card p {
+            font-size: 13px;
+            color: var(--text-secondary);
+            line-height: 1.6
+        }
+
+        /* ===== Developer ===== */
+        .dev-grid {
+            display: grid;
+            grid-template-columns: 1.2fr .8fr;
+            gap: 2rem;
+            align-items: center
+        }
+
+        .dev-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 2rem;
+            backdrop-filter: blur(10px)
+        }
+
+        .dev-avatar {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 2px solid rgba(147, 51, 234, .25)
+        }
+
+        .dev-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover
+        }
+
+        .dev-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px
+        }
+
+        .dev-stat {
+            background: var(--bg-elevated);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 1.25rem;
+            text-align: center;
+            transition: all .3s
+        }
+
+        .dev-stat:hover {
+            border-color: var(--border-hover);
+            transform: translateY(-3px)
+        }
+
+        .dev-stat .num {
+            font-size: 1.5rem;
+            font-weight: 800
+        }
+
+        .dev-stat .label {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-top: 4px
+        }
+
+        .dev-tag {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 600
+        }
+
+        /* ===== Brand / About Section ===== */
+        .brand-section {
+            position: relative;
+            min-height: 520px;
+            overflow: hidden;
+        }
+        .brand-bg {
+            position: absolute; inset: 0; z-index: 0;
+            background: #05080F;
+        }
+        .brand-bg img {
+            width: 100%; height: 100%;
+            object-fit: cover;
+            object-position: center 40%;
+        }
+        .brand-overlay {
+            position: absolute; inset: 0; z-index: 1;
+            background:
+                linear-gradient(90deg, rgba(5,8,15,.88) 0%, rgba(5,8,15,.6) 45%, rgba(5,8,15,.25) 100%),
+                linear-gradient(180deg, rgba(5,8,15,.5) 0%, transparent 20%, transparent 80%, rgba(5,8,15,.6) 100%);
+        }
+        .brand-content {
+            position: relative; z-index: 2;
+            padding: 5.5rem 1.5rem;
+        }
+        .brand-layout {
+            display: grid;
+            grid-template-columns: 1.4fr 0.6fr;
+            gap: 3rem;
+            align-items: center;
+        }
+        .brand-text { max-width: 640px; }
+        .brand-pills {
+            display: flex; flex-wrap: wrap; gap: 8px;
+        }
+        .brand-pill {
+            padding: 8px 16px;
+            border-radius: 50px;
+            font-size: 12px;
+            font-weight: 600;
+            background: rgba(147,51,234,.12);
+            border: 1px solid rgba(147,51,234,.2);
+            color: rgba(255,255,255,.8);
+            transition: all .3s;
+        }
+        .brand-pill:hover {
+            background: rgba(147,51,234,.2);
+            border-color: rgba(147,51,234,.4);
+            transform: translateY(-2px);
+        }
+        .brand-stats-col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        /* ===== Footer ===== */
+        footer {
+            background: #030508;
+            border-top: 1px solid var(--border);
+            color: rgba(255, 255, 255, .7);
+            padding: 4rem 1.5rem 2rem
+        }
+
+        .footer-inner {
+            max-width: 1140px;
+            margin: 0 auto
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr;
+            gap: 3rem;
+            margin-bottom: 3rem
+        }
+
+        .footer-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 1rem
+        }
+
+        .footer-brand-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid rgba(147, 51, 234, .15)
+        }
+
+        .footer-brand-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover
+        }
+
+        .footer-brand span {
+            font-weight: 700;
+            color: #fff;
+            font-size: 1rem
+        }
+
+        footer h5 {
+            color: #fff;
+            font-weight: 600;
+            font-size: 13px;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: .5px
+        }
+
+        footer a {
+            display: block;
+            color: rgba(255, 255, 255, .4);
+            text-decoration: none;
+            font-size: 13px;
+            margin-bottom: .6rem;
+            transition: color .2s
+        }
+
+        footer a:hover {
+            color: var(--warm-accent)
+        }
+
+        .footer-bottom {
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, .06);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem
+        }
+
+        .footer-bottom p {
+            font-size: 12px;
+            color: rgba(255, 255, 255, .25)
+        }
+
+        .pay-methods {
+            display: flex;
+            gap: 1.25rem;
+            font-size: 12px;
+            font-weight: 600;
+            color: rgba(255, 255, 255, .2)
+        }
+
+        /* ===== Responsive — Tablet (max 1024px) ===== */
+        @media(max-width:1024px) {
+            .products-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 1rem
+            }
+
+            .smart-layout {
+                gap: 2.5rem
+            }
+
+            .steps-grid {
+                gap: 1rem
+            }
+
+            .dev-grid {
+                gap: 1.5rem
+            }
+
+            .hero h1 {
+                font-size: clamp(2.2rem, 5vw, 3.5rem)
+            }
+        }
+
+        /* ===== Responsive — Small Tablet / Large Phone (max 900px) ===== */
+        @media(max-width:900px) {
+            .products-grid {
+                grid-template-columns: 1fr
+            }
+
+            .smart-layout,
+            .dev-grid,
+            .brand-layout {
+                grid-template-columns: 1fr
+            }
+
+            .steps-grid {
+                grid-template-columns: 1fr 1fr
+            }
+
+            .footer-grid {
+                grid-template-columns: 1fr 1fr
+            }
+
+            section {
+                padding: 4rem 1.25rem
+            }
+
+            .hero {
+                min-height: 70vh
+            }
+
+            .stats-row {
+                max-width: 100%
+            }
+        }
+
+        /* ===== Responsive — Phone (max 768px) ===== */
+        @media(max-width:768px) {
+            .nav-links {
+                display: none
+            }
+
+            .mobile-toggle {
+                display: block
+            }
+
+            .nav-inner {
+                padding: 0 1rem
+            }
+
+            .hero {
+                min-height: 60vh;
+                min-height: 60dvh
+            }
+
+            .intro-section {
+                padding: 3rem 1rem 3rem
+            }
+
+            .intro-title {
+                font-size: clamp(1.8rem, 7vw, 2.8rem);
+                margin-bottom: 1rem
+            }
+
+            .intro-sub {
+                font-size: 0.95rem;
+                margin-bottom: 2rem;
+                line-height: 1.65
+            }
+
+            .hero-badge {
+                padding: 6px 14px;
+                margin-bottom: 1.5rem
+            }
+
+            .hero-badge span {
+                font-size: 9px;
+                letter-spacing: 1px
+            }
+
+            .intro-btns {
+                flex-direction: column;
+                width: 100%;
+                gap: .6rem
+            }
+
+            .btn-hero-primary,
+            .btn-hero-secondary {
+                width: 100%;
+                padding: 14px 24px;
+                font-size: 14px
+            }
+
+            .stats-row {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 8px;
+                max-width: 100%
+            }
+
+            .stat-card {
+                padding: .85rem .5rem
+            }
+
+            .stat-num {
+                font-size: clamp(1.2rem, 4vw, 1.6rem)
+            }
+
+            .stat-label {
+                font-size: 11px
+            }
+
+            /* Hero image adjustments for mobile */
+            :root {
+                --hero-position-y: 35%;
+                --hero-scale: 1.05;
+                --hero-top-gradient: 0.7;
+                --hero-bottom-gradient: 0.9;
+            }
+
+            .section-title {
+                font-size: clamp(1.5rem, 5.5vw, 2rem)
+            }
+
+            .section-sub {
+                font-size: 0.95rem
+            }
+
+            .products-grid {
+                gap: 1rem
+            }
+
+            .p-card {
+                padding: 0
+            }
+
+            .p-card-body {
+                padding: 1.25rem
+            }
+
+            .p-card-img {
+                height: 160px
+            }
+
+            .p-card h3 {
+                font-size: 1.15rem
+            }
+
+            .p-price {
+                font-size: 1.5rem
+            }
+
+            .btn-buy {
+                padding: 12px;
+                font-size: 14px
+            }
+
+            .smart-grid {
+                grid-template-columns: 1fr
+            }
+
+            .smart-layout {
+                gap: 2rem
+            }
+
+            .smart-section .section-sub {
+                max-width: 100%
+            }
+
+            .btn-smart,
+            .btn-smart-ghost {
+                width: 100%;
+                text-align: center;
+                padding: 12px 20px;
+                font-size: 14px
+            }
+
+            .steps-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem
+            }
+
+            .step-card {
+                padding: 1.5rem 1rem
+            }
+
+            .dev-stats {
+                grid-template-columns: 1fr 1fr;
+                gap: 8px
+            }
+
+            .dev-stat {
+                padding: 1rem
+            }
+
+            .dev-card {
+                padding: 1.5rem
+            }
+
+            .brand-content {
+                padding: 3.5rem 1rem
+            }
+
+            .brand-overlay {
+                background:
+                    linear-gradient(180deg, rgba(5,8,15,.85) 0%, rgba(5,8,15,.7) 50%, rgba(5,8,15,.85) 100%);
+            }
+
+            .brand-stats-col {
+                grid-template-columns: 1fr 1fr;
+                gap: 8px
+            }
+
+            .brand-pills {
+                justify-content: center
+            }
+
+            .brand-text {
+                text-align: center
+            }
+
+            .footer-grid {
+                grid-template-columns: 1fr
+            }
+
+            .footer-bottom {
+                flex-direction: column;
+                text-align: center
+            }
+        }
+
+        /* ===== Responsive — Small Phone (max 400px) ===== */
+        @media(max-width:400px) {
+            .hero {
+                min-height: 50vh
+            }
+
+            .intro-title {
+                font-size: 1.65rem
+            }
+
+            .intro-sub {
+                font-size: 0.88rem
+            }
+
+            .intro-section {
+                padding: 2.5rem 1rem
+            }
+
+            .stats-row {
+                grid-template-columns: 1fr 1fr;
+                gap: 6px
+            }
+
+            .stat-num {
+                font-size: 1.1rem
+            }
+
+            .p-card-body {
+                padding: 1rem
+            }
+
+            .p-card-img {
+                height: 140px
+            }
+
+            .feat-item {
+                font-size: 12px
+            }
+
+            .coupon-box {
+                flex-wrap: wrap;
+                justify-content: center
+            }
+
+            .coupon-box input {
+                width: 120px;
+                font-size: 12px
+            }
+
+            nav.scrolled {
+                padding: .5rem 0
+            }
+
+            .nav-brand span {
+                font-size: .9rem
+            }
+
+            .nav-brand-icon {
+                width: 34px;
+                height: 34px
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Mobile Nav -->
+    <div class="mobile-nav" id="mobileNav">
+        <button class="mobile-close"
+            onclick="document.getElementById('mobileNav').classList.remove('open')">&times;</button>
+        <a href="#products" onclick="document.getElementById('mobileNav').classList.remove('open')"
+            data-i18n="nav_products">Productos</a>
+        <a href="#smart" onclick="document.getElementById('mobileNav').classList.remove('open')"
+            data-i18n="nav_smart">Soluciones SMART</a>
+        <a href="#how" onclick="document.getElementById('mobileNav').classList.remove('open')" data-i18n="nav_how">Cómo
+            Funciona</a>
+        <a href="#contact" onclick="document.getElementById('mobileNav').classList.remove('open')"
+            data-i18n="nav_contact">Contacto</a>
+    </div>
+
+    <!-- ==================== NAVBAR ==================== -->
+    <nav id="navbar">
+        <div class="nav-inner">
+            <a href="#" class="nav-brand">
+                <div class="nav-brand-icon">
+                    <img src="logo5.png" alt="GWL Systems">
+                </div>
+                <div>
+                    <span>GWL Systems</span>
+                    <small class="mono">Software Studio</small>
+                </div>
+            </a>
+            <div class="nav-links">
+                <a href="#products" data-i18n="nav_products">Productos</a>
+                <a href="#smart" data-i18n="nav_smart">Soluciones SMART</a>
+                <a href="#how" data-i18n="nav_how">Cómo Funciona</a>
+                <a href="#contact" data-i18n="nav_contact">Contacto</a>
+                <button class="lang-toggle" onclick="toggleLang()"><span id="langFlag">🇪🇸</span> <span
+                        id="langCode">ES</span></button>
+                <button class="btn-nav btn-blue"
+                    onclick="document.getElementById('products').scrollIntoView({behavior:'smooth'})"
+                    data-i18n="nav_cta">Ver Productos</button>
+            </div>
+            <button class="mobile-toggle"
+                onclick="document.getElementById('mobileNav').classList.add('open')">☰</button>
+        </div>
+    </nav>
+
+    <!-- ==================== HERO (solo imagen) ==================== -->
+    <section class="hero">
+        <div class="hero-bg">
+            <img src="Header2.png" alt="GWL Systems">
+        </div>
+        <div class="hero-overlay"></div>
+        <div class="hero-scanline"></div>
+
+        <div class="scroll-ind" style="animation: fadeUp 1s ease-out forwards; animation-delay:1s; opacity:0">
+            <div><span></span></div>
+        </div>
+    </section>
+
+    <!-- ==================== INTRO (contenido debajo del header) ==================== -->
+    <section class="intro-section bg-scene">
+        <div class="section-inner" style="text-align:center">
+            <div class="hero-badge glass fade-up" style="animation-delay:.1s">
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none" style="flex-shrink:0">
+                    <circle cx="7" cy="7" r="6" stroke="#C026D3" stroke-width="1.5" />
+                    <path d="M4.5 7L6.5 9L9.5 5" stroke="#C026D3" stroke-width="1.5" stroke-linecap="round"
+                        stroke-linejoin="round" />
+                </svg>
+                <span class="mono" data-i18n="hero_badge">4 APLICACIONES DISPONIBLES</span>
+            </div>
+
+            <h1 class="intro-title fade-up" style="animation-delay:.2s">
+                <span data-i18n="hero_t1">Software que </span><br>
+                <em class="text-gradient-warm" data-i18n="hero_t2">automatiza tu trabajo</em>
+            </h1>
+
+            <p class="intro-sub fade-up" style="animation-delay:.3s" data-i18n="hero_sub">Herramientas de escritorio en
+                Python. Sin suscripciones, sin nube, un solo pago. Diseñadas para profesionales en Colombia y
+                Latinoamérica.</p>
+
+            <div class="intro-btns fade-up" style="animation-delay:.4s">
+                <button class="btn-hero-primary"
+                    onclick="document.getElementById('products').scrollIntoView({behavior:'smooth'})"
+                    data-i18n="hero_cta1">Ver Productos y Precios</button>
+                <button class="btn-hero-secondary"
+                    onclick="document.getElementById('smart').scrollIntoView({behavior:'smooth'})"
+                    data-i18n="hero_cta2">Soluciones Personalizadas</button>
+            </div>
+
+            <div class="stats-row fade-up" style="animation-delay:.5s">
+                <div class="stat-card glass">
+                    <div class="stat-num text-gradient-warm">4</div>
+                    <div class="stat-label" data-i18n="stat_apps">Aplicaciones</div>
+                </div>
+                <div class="stat-card glass">
+                    <div class="stat-num text-gradient-warm">100%</div>
+                    <div class="stat-label" data-i18n="stat_offline">Offline</div>
+                </div>
+                <div class="stat-card glass">
+                    <div class="stat-num text-gradient-fire">$0</div>
+                    <div class="stat-label" data-i18n="stat_subs">Suscripciones</div>
+                </div>
+                <div class="stat-card glass">
+                    <div class="stat-num text-gradient-warm">∞</div>
+                    <div class="stat-label" data-i18n="stat_license">Licencia Vitalicia</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="section-divider"></div>
+
+    <!-- ==================== PRODUCTS ==================== -->
+    <section id="products" style="background:var(--bg-surface)">
+        <div class="section-inner">
+            <div style="text-align:center">
+                <span class="section-tag mono" data-i18n="prod_tag">CATÁLOGO DE SOFTWARE</span>
+                <h2 class="section-title" data-i18n="prod_title">Elige tu herramienta de productividad</h2>
+                <p class="section-sub" style="margin:0 auto" data-i18n="prod_sub">Un solo pago, licencia vitalicia.
+                    Todas funcionan sin internet.</p>
+                <div class="coupon-wrap">
+                    <div class="coupon-box" id="couponBox">
+                        <span style="font-size:16px">🎟️</span>
+                        <input type="text" id="couponInput" placeholder="Código de cupón..."
+                            data-i18n-placeholder="coupon_ph">
+                        <button onclick="applyCoupon()" data-i18n="coupon_btn">Aplicar</button>
+                    </div>
+                    <div class="coupon-ok" id="couponOk" data-i18n="coupon_ok">✅ ¡Cupón TUNALEMON aplicado! 10% de
+                        descuento</div>
+                </div>
+            </div>
+
+            <div class="products-grid">
+
+                <!-- VOX&DOCS -->
+                <div class="p-card">
+                    <div class="accent-line" style="background:linear-gradient(90deg, #1E40AF, #9333EA)"></div>
+                    <div class="p-card-img">
+                        <img src="productos/vox&docs.png" alt="Vox&Docs Screenshot">
+                        <div class="p-card-img-overlay"></div>
+                    </div>
+                    <div class="p-card-body">
+                        <div class="p-card-header">
+                            <div class="p-icon-wrap" style="background:var(--blue-light)">
+                                <img src="productos/vox&docs_ico.png" alt="Vox&Docs Icon">
+                            </div>
+                            <span class="p-tag" style="background:var(--amber-light);color:var(--amber)"
+                                data-i18n="tag_popular">Más Popular</span>
+                        </div>
+                        <h3>Vox&Docs</h3>
+                        <span class="version mono">v2.12 · Python / PyQt6</span>
+                        <p class="desc" data-i18n="vox_desc">Convierte archivos de audio (MP3, WAV, M4A, OGG, AAC, FLAC,
+                            OPUS) en texto y genera documentos Word (.docx). Procesamiento local con FFmpeg y transcripción
+                            vía Google Speech Recognition. Interfaz multilingüe con licenciamiento seguro.</p>
+                        <div class="feat-list">
+                            <div class="feat-item"><span class="feat-check" style="background:var(--blue)">✓</span><span
+                                    data-i18n="vox_f1">Transcripción automática de audio a texto</span></div>
+                            <div class="feat-item"><span class="feat-check" style="background:var(--blue)">✓</span><span
+                                    data-i18n="vox_f2">Generación de actas y documentos Word</span></div>
+                            <div class="feat-item"><span class="feat-check" style="background:var(--blue)">✓</span><span
+                                    data-i18n="vox_f3">Detección de oradores · 5+ idiomas</span></div>
+                            <div class="feat-item"><span class="feat-check" style="background:var(--blue)">✓</span><span
+                                    data-i18n="vox_f4">Plantillas personalizadas de documentos</span></div>
+                            <div class="feat-item"><span class="feat-check" style="background:var(--blue)">✓</span><span
+                                    data-i18n="vox_f5">Optimizado para Windows 10 / 11</span></div>
+                        </div>
+                        <div class="p-price-row">
+                            <span class="p-price text-gradient-blue" id="priceVox">$195.000</span>
+                            <span class="p-price-usd">COP · $49 USD</span>
+                        </div>
+                        <button class="btn-buy" style="background:linear-gradient(135deg, #1E40AF, #9333EA)"
+                            data-i18n="buy_btn">Comprar Ahora</button>
+                    </div>
+                </div>
+
+                <!-- TOPOAMERICA MAPS -->
+                <div class="p-card">
+                    <div class="accent-line" style="background:linear-gradient(90deg, #9333EA, #C026D3)"></div>
+                    <div class="p-card-img">
+                        <img src="productos/at_maps.png" alt="TopoAmerica Maps Screenshot">
+                        <div class="p-card-img-overlay"></div>
+                    </div>
+                    <div class="p-card-body">
+                        <div class="p-card-header">
+                            <div class="p-icon-wrap" style="background:var(--purple-light)">
+                                <img src="productos/TopoAmerica_ico.png" alt="TopoAmerica Icon">
+                            </div>
+                            <span class="p-tag" style="background:var(--purple-light);color:var(--purple)"
+                                data-i18n="tag_pro">Profesional</span>
+                        </div>
+                        <h3>TopoAmerica Maps</h3>
+                        <span class="version mono">v1.0 · Python / PyQt6 / Leaflet.js</span>
+                        <p class="desc" data-i18n="topo_desc">Visor cartográfico de escritorio. Carga KMZ, KML y GeoJSON
+                            sobre mapas satelitales. Detecta solapamientos y huecos entre polígonos, mide distancias y
+                            áreas, genera perfiles de alturas SRTM. Exporta a 4 formatos.</p>
+                        <div class="feat-list">
+                            <div class="feat-item"><span class="feat-check" style="background:var(--purple)">✓</span><span
+                                    data-i18n="topo_f1">Mapas satelitales y topográficos interactivos</span></div>
+                            <div class="feat-item"><span class="feat-check" style="background:var(--purple)">✓</span><span
+                                    data-i18n="topo_f2">Análisis de solapamientos y huecos geométricos</span></div>
+                            <div class="feat-item"><span class="feat-check" style="background:var(--purple)">✓</span><span
+                                    data-i18n="topo_f3">Perfiles de elevación SRTM con suavizado</span></div>
+                            <div class="feat-item"><span class="feat-check" style="background:var(--purple)">✓</span><span
+                                    data-i18n="topo_f4">Exporta a GeoJSON, Shapefile, GPKG, KMZ</span></div>
+                            <div class="feat-item"><span class="feat-check" style="background:var(--purple)">✓</span><span
+                                    data-i18n="topo_f5">4 idiomas (ES / EN / PT / FR)</span></div>
+                        </div>
+                        <div class="p-price-row">
+                            <span class="p-price text-gradient-purple" id="priceTopo">$250.000</span>
+                            <span class="p-price-usd">COP · $59 USD</span>
+                        </div>
+                        <button class="btn-buy" style="background:linear-gradient(135deg, #9333EA, #C026D3)"
+                            data-i18n="buy_btn">Comprar Ahora</button>
+                    </div>
+                </div>
+
+                <!-- INVENTARIUM FILES -->
+                <div class="p-card">
+                    <div class="accent-line" style="background:linear-gradient(90deg, #38BDF8, #1E40AF)"></div>
+                    <div class="p-card-img">
+                        <img src="productos/inv_files.png" alt="Inventarium Files Screenshot">
+                        <div class="p-card-img-overlay"></div>
+                    </div>
+                    <div class="p-card-body">
+                        <div class="p-card-header">
+                            <div class="p-icon-wrap" style="background:var(--cyan-light)">
+                                <img src="productos/inventarium_ico.png" alt="Inventarium Icon">
+                            </div>
+                            <span class="p-tag" style="background:var(--green-light);color:var(--green)"
+                                data-i18n="tag_new">Nuevo</span>
+                        </div>
+                        <h3>Inventarium Files</h3>
+                        <span class="version mono">v1.0 · Python / PyQt6</span>
+                        <p class="desc" data-i18n="inv_desc">Genera inventarios completos de archivos en documentos Word.
+                            Escaneo DFS iterativo de directorios, formato árbol jerárquico o listado plano, ordenamiento
+                            alfabético o numérico natural. Multiplataforma.</p>
+                        <div class="feat-list">
+                            <div class="feat-item"><span class="feat-check" style="background:var(--blue)">✓</span><span
+                                    data-i18n="inv_f1">Escaneo DFS sin límite de profundidad</span></div>
+                            <div class="feat-item"><span class="feat-check" style="background:var(--blue)">✓</span><span
+                                    data-i18n="inv_f2">Formato árbol jerárquico o listado plano</span></div>
+                            <div class="feat-item"><span class="feat-check" style="background:var(--blue)">✓</span><span
+                                    data-i18n="inv_f3">Ordenamiento alfabético y numérico natural</span></div>
+                            <div class="feat-item"><span class="feat-check" style="background:var(--blue)">✓</span><span
+                                    data-i18n="inv_f4">Exportación a Word con metadatos completos</span></div>
+                            <div class="feat-item"><span class="feat-check" style="background:var(--blue)">✓</span><span
+                                    data-i18n="inv_f5">Interfaz bilingüe (ES / EN)</span></div>
+                        </div>
+                        <div class="p-price-row">
+                            <span class="p-price text-gradient-blue" id="priceInv">$99.000</span>
+                            <span class="p-price-usd">COP · $25 USD</span>
+                        </div>
+                        <button class="btn-buy" style="background:linear-gradient(135deg, #1E40AF, #9333EA)"
+                            data-i18n="buy_btn">Comprar Ahora</button>
+                    </div>
+                </div>
+
+                <!-- TUERIDATA -->
+                <div class="p-card">
+                    <div class="accent-line" style="background:linear-gradient(90deg, #DC2626, #EA580C)"></div>
+                    <div class="p-card-img">
+                        <img src="productos/tueridata.png" alt="TueriData Screenshot">
+                        <div class="p-card-img-overlay"></div>
+                    </div>
+                    <div class="p-card-body">
+                        <div class="p-card-header">
+                            <div class="p-icon-wrap" style="background:var(--red-light)">
+                                <img src="productos/tueri_ico.jpg" alt="TueriData Icon">
+                            </div>
+                            <span class="p-tag" style="background:var(--red-light);color:var(--red)"
+                                data-i18n="tag_essential">Esencial</span>
+                        </div>
+                        <h3>TueriData</h3>
+                        <span class="version mono">v1.0 · Python / PyQt6</span>
+                        <p class="desc" data-i18n="tueri_desc">Copias de seguridad de múltiples carpetas en paralelo usando
+                            Robocopy. Escaneo previo del volumen, progreso en tiempo real por carpeta y global, reconexión
+                            automática y resumen detallado de sesión.</p>
+                        <div class="feat-list">
+                            <div class="feat-item"><span class="feat-check" style="background:var(--red)">✓</span><span
+                                    data-i18n="tueri_f1">Backup paralelo de múltiples carpetas</span></div>
+                            <div class="feat-item"><span class="feat-check" style="background:var(--red)">✓</span><span
+                                    data-i18n="tueri_f2">Preserva atributos y marcas de tiempo</span></div>
+                            <div class="feat-item"><span class="feat-check" style="background:var(--red)">✓</span><span
+                                    data-i18n="tueri_f3">Reconexión automática ante desconexiones</span></div>
+                            <div class="feat-item"><span class="feat-check" style="background:var(--red)">✓</span><span
+                                    data-i18n="tueri_f4">Progreso en tiempo real por carpeta</span></div>
+                            <div class="feat-item"><span class="feat-check" style="background:var(--red)">✓</span><span
+                                    data-i18n="tueri_f5">Resumen detallado al finalizar sesión</span></div>
+                        </div>
+                        <div class="p-price-row">
+                            <span class="p-price text-gradient-fire" id="priceTueri">$120.000</span>
+                            <span class="p-price-usd">COP · $29 USD</span>
+                        </div>
+                        <button class="btn-buy" style="background:linear-gradient(135deg, #DC2626, #EA580C)"
+                            data-i18n="buy_btn">Comprar Ahora</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="section-divider"></div>
+
+    <!-- ==================== SMART FAMILY ==================== -->
+    <section id="smart" class="smart-section bg-scene">
+        <div class="section-inner">
+            <div class="smart-layout">
+                <div>
+                    <span class="section-tag mono" data-i18n="smart_tag">SOLUCIONES EMPRESARIALES</span>
+                    <h2 class="section-title"><span data-i18n="smart_t1">Familia </span><span
+                            class="text-gradient-purple" data-i18n="smart_t2">SMART</span></h2>
+                    <p class="section-sub" data-i18n="smart_sub">Sistemas personalizados a medida para tu empresa.
+                        Automatización de documentos, flujos de trabajo e integración con tus procesos. Contacta
+                        directamente al desarrollador.</p>
+                    <div style="margin-top:2rem;display:flex;gap:.75rem;flex-wrap:wrap">
+                        <a href="mailto:soporte.gwl@gmail.com" style="text-decoration:none"><button class="btn-smart"
+                                data-i18n="smart_cta">Contactar al Desarrollador</button></a>
+                        <button class="btn-smart-ghost" data-i18n="smart_cta2">Solicitar Cotización</button>
+                    </div>
+                </div>
+                <div class="smart-grid">
+                    <div class="smart-item">
+                        <div class="s-icon">📄</div>
+                        <h4 data-i18n="sm1_t">SmartDocs</h4>
+                        <p data-i18n="sm1_d">Generación automatizada de documentos corporativos con plantillas
+                            inteligentes.</p>
+                    </div>
+                    <div class="smart-item">
+                        <div class="s-icon">📊</div>
+                        <h4 data-i18n="sm2_t">SmartReports</h4>
+                        <p data-i18n="sm2_d">Reportes y análisis automatizados desde múltiples fuentes de datos.</p>
+                    </div>
+                    <div class="smart-item">
+                        <div class="s-icon">📧</div>
+                        <h4 data-i18n="sm3_t">SmartMail</h4>
+                        <p data-i18n="sm3_d">Automatización de respuestas y gestión de correo con IA.</p>
+                    </div>
+                    <div class="smart-item">
+                        <div class="s-icon">⚙️</div>
+                        <h4 data-i18n="sm4_t">Smart Custom</h4>
+                        <p data-i18n="sm4_d">Soluciones a medida para cualquier flujo empresarial.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="section-divider"></div>
+
+    <!-- ==================== HOW IT WORKS ==================== -->
+    <section id="how" class="bg-scene">
+        <div class="section-inner" style="text-align:center">
+            <span class="section-tag mono" data-i18n="how_tag">PROCESO SIMPLE</span>
+            <h2 class="section-title" data-i18n="how_title">De la compra a la productividad en minutos</h2>
+            <div class="steps-grid">
+                <div class="step-card">
+                    <div class="step-num">1</div>
+                    <div class="step-icon">🛒</div>
+                    <h4 data-i18n="s1_t">Compra segura</h4>
+                    <p data-i18n="s1_d">Paga con PSE, Nequi, tarjeta o PayPal. Confirmación inmediata.</p>
+                </div>
+                <div class="step-card">
+                    <div class="step-num">2</div>
+                    <div class="step-icon">🔑</div>
+                    <h4 data-i18n="s2_t">Recibe tu licencia</h4>
+                    <p data-i18n="s2_d">Tu clave de activación y link de descarga llegan al instante a tu correo.</p>
+                </div>
+                <div class="step-card">
+                    <div class="step-num">3</div>
+                    <div class="step-icon">💾</div>
+                    <h4 data-i18n="s3_t">Instala y activa</h4>
+                    <p data-i18n="s3_d">Ejecuta el instalador, ingresa tu clave. Listo para usar en tu PC.</p>
+                </div>
+                <div class="step-card">
+                    <div class="step-num">4</div>
+                    <div class="step-icon">🚀</div>
+                    <h4 data-i18n="s4_t">Úsalo para siempre</h4>
+                    <p data-i18n="s4_d">Licencia vitalicia. Sin renovaciones, sin pagos recurrentes.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="section-divider"></div>
+
+    <!-- ==================== MARCA / ABOUT ==================== -->
+    <section class="brand-section">
+        <div class="brand-bg">
+            <img src="productos/brand_bg.png" alt="GWL Systems Global">
+        </div>
+        <div class="brand-overlay"></div>
+        <div class="brand-content">
+            <div class="section-inner">
+                <div class="brand-layout">
+                    <div class="brand-text">
+                        <span class="section-tag mono" data-i18n="brand_tag">QUIÉNES SOMOS</span>
+                        <h2 class="section-title" style="margin-bottom:1.25rem" data-i18n="brand_title">Innovación que Transforma tu Productividad</h2>
+                        <p style="color:rgba(255,255,255,.8);font-size:1.05rem;line-height:1.85;margin-bottom:1.5rem" data-i18n="brand_p1">
+                            Desarrollamos software adaptado a tus necesidades que transforma tus procesos documentales en experiencias más rápidas, seguras y alineadas con la nueva era de la productividad automatizada.
+                        </p>
+                        <p style="color:rgba(255,255,255,.6);font-size:.95rem;line-height:1.8;margin-bottom:2rem" data-i18n="brand_p2">
+                            Somos un laboratorio digital de vanguardia enfocado en crear aplicaciones que combinan Inteligencia Artificial, Automatización Robótica de Procesos (RPA) y Análisis de Datos Avanzado. Nuestro objetivo: revolucionar la productividad empresarial y eliminar la carga de trabajo repetitivo.
+                        </p>
+                        <div class="brand-pills">
+                            <span class="brand-pill">🤖 Inteligencia Artificial</span>
+                            <span class="brand-pill">⚙️ Automatización RPA</span>
+                            <span class="brand-pill">📊 Análisis de Datos</span>
+                            <span class="brand-pill">🔒 Procesamiento Local</span>
+                        </div>
+                    </div>
+                    <div class="brand-stats-col">
+                        <div class="dev-stat">
+                            <div class="num text-gradient-warm">4</div>
+                            <div class="label" data-i18n="trust_1">Apps registradas DNDA</div>
+                        </div>
+                        <div class="dev-stat">
+                            <div class="num text-gradient-warm">100%</div>
+                            <div class="label" data-i18n="trust_2">Procesamiento local</div>
+                        </div>
+                        <div class="dev-stat">
+                            <div class="num" style="font-size:1.2rem;color:#fff">Win 10/11</div>
+                            <div class="label" data-i18n="trust_3">Plataforma principal</div>
+                        </div>
+                        <div class="dev-stat">
+                            <div class="num text-gradient-fire">COP</div>
+                            <div class="label" data-i18n="trust_4">Precios en pesos</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== FOOTER ==================== -->
+    <footer id="contact">
+        <div class="footer-inner">
+            <div class="footer-grid">
+                <div>
+                    <div class="footer-brand">
+                        <div class="footer-brand-icon">
+                            <img src="logo5.png" alt="GWL">
+                        </div>
+                        <span>GWL Systems</span>
+                    </div>
+                    <p style="font-size:13px;line-height:1.8;max-width:340px;color:rgba(255,255,255,.4)"
+                        data-i18n="footer_desc">Suite de herramientas de productividad desarrolladas por el Ing. Gustavo
+                        Walteros Larrotta. Software registrado ante la DNDA, Colombia.</p>
+                    <div style="margin-top:1rem"><a href="mailto:soporte.gwl@gmail.com" style="color:#A78BFA">📧
+                            soporte.gwl@gmail.com</a></div>
+                </div>
+                <div>
+                    <h5 data-i18n="foot_prod">Productos</h5>
+                    <a href="#products">Vox&Docs</a>
+                    <a href="#products">Inventarium Files</a>
+                    <a href="#products">TopoAmerica Maps</a>
+                    <a href="#products">TueriData</a>
+                    <a href="#smart" data-i18n="foot_smart">Familia SMART</a>
+                </div>
+                <div>
+                    <h5 data-i18n="foot_support">Soporte</h5>
+                    <a href="#" data-i18n="foot_docs">Documentación</a>
+                    <a href="#" data-i18n="foot_guide">Guía de Instalación</a>
+                    <a href="#" data-i18n="foot_ticket">Ticket de Soporte</a>
+                    <a href="#" data-i18n="foot_privacy">Política de Privacidad</a>
+                    <a href="#" data-i18n="foot_terms">Términos de Servicio</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p data-i18n="footer_copy">© 2026 Ing. Gustavo Walteros Larrotta. Todos los derechos reservados.
+                    Bucaramanga, Colombia.</p>
+                <div class="pay-methods"><span>PSE</span><span>Nequi</span><span>PayPal</span><span>Stripe</span></div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        const T = {
+            es: {
+                nav_products: "Productos", nav_smart: "Soluciones SMART", nav_how: "Cómo Funciona", nav_contact: "Contacto", nav_cta: "Ver Productos",
+                hero_badge: "4 APLICACIONES DISPONIBLES", hero_t1: "Software que ", hero_t2: "automatiza tu trabajo",
+                hero_sub: "Herramientas de escritorio en Python. Sin suscripciones, sin nube, un solo pago. Diseñadas para profesionales en Colombia y Latinoamérica.",
+                hero_cta1: "Ver Productos y Precios", hero_cta2: "Soluciones Personalizadas",
+                stat_apps: "Aplicaciones", stat_offline: "Offline", stat_subs: "Suscripciones", stat_license: "Licencia Vitalicia",
+                prod_tag: "CATÁLOGO DE SOFTWARE", prod_title: "Elige tu herramienta de productividad", prod_sub: "Un solo pago, licencia vitalicia. Todas funcionan sin internet.",
+                coupon_ph: "Código de cupón...", coupon_btn: "Aplicar", coupon_ok: "✅ ¡Cupón TUNALEMON aplicado! 10% de descuento",
+                tag_popular: "Más Popular", tag_new: "Nuevo", tag_pro: "Profesional", tag_essential: "Esencial",
+                vox_desc: "Convierte archivos de audio (MP3, WAV, M4A, OGG, AAC, FLAC, OPUS) en texto y genera documentos Word (.docx). Procesamiento local con FFmpeg y transcripción vía Google Speech Recognition. Interfaz multilingüe con licenciamiento seguro.",
+                vox_f1: "Transcripción automática de audio a texto", vox_f2: "Generación de actas y documentos Word", vox_f3: "Detección de oradores · 5+ idiomas", vox_f4: "Plantillas personalizadas de documentos", vox_f5: "Optimizado para Windows 10 / 11",
+                inv_desc: "Genera inventarios completos de archivos en documentos Word. Escaneo DFS iterativo de directorios, formato árbol jerárquico o listado plano, ordenamiento alfabético o numérico natural. Multiplataforma.",
+                inv_f1: "Escaneo DFS sin límite de profundidad", inv_f2: "Formato árbol jerárquico o listado plano", inv_f3: "Ordenamiento alfabético y numérico natural", inv_f4: "Exportación a Word con metadatos completos", inv_f5: "Interfaz bilingüe (ES / EN)",
+                topo_desc: "Visor cartográfico de escritorio. Carga KMZ, KML y GeoJSON sobre mapas satelitales. Detecta solapamientos y huecos entre polígonos, mide distancias y áreas, genera perfiles de alturas SRTM. Exporta a 4 formatos.",
+                topo_f1: "Mapas satelitales y topográficos interactivos", topo_f2: "Análisis de solapamientos y huecos geométricos", topo_f3: "Perfiles de elevación SRTM con suavizado", topo_f4: "Exporta a GeoJSON, Shapefile, GPKG, KMZ", topo_f5: "4 idiomas (ES / EN / PT / FR)",
+                tueri_desc: "Copias de seguridad de múltiples carpetas en paralelo usando Robocopy. Escaneo previo del volumen, progreso en tiempo real por carpeta y global, reconexión automática y resumen detallado de sesión.",
+                tueri_f1: "Backup paralelo de múltiples carpetas", tueri_f2: "Preserva atributos y marcas de tiempo", tueri_f3: "Reconexión automática ante desconexiones", tueri_f4: "Progreso en tiempo real por carpeta", tueri_f5: "Resumen detallado al finalizar sesión",
+                buy_btn: "Comprar Ahora",
+                smart_tag: "SOLUCIONES EMPRESARIALES", smart_t1: "Familia ", smart_t2: "SMART",
+                smart_sub: "Sistemas personalizados a medida para tu empresa. Automatización de documentos, flujos de trabajo e integración con tus procesos. Contacta directamente al desarrollador.",
+                smart_cta: "Contactar al Desarrollador", smart_cta2: "Solicitar Cotización",
+                sm1_t: "SmartDocs", sm1_d: "Generación automatizada de documentos corporativos con plantillas inteligentes.",
+                sm2_t: "SmartReports", sm2_d: "Reportes y análisis automatizados desde múltiples fuentes de datos.",
+                sm3_t: "SmartMail", sm3_d: "Automatización de respuestas y gestión de correo con IA.",
+                sm4_t: "Smart Custom", sm4_d: "Soluciones a medida para cualquier flujo empresarial.",
+                how_tag: "PROCESO SIMPLE", how_title: "De la compra a la productividad en minutos",
+                s1_t: "Compra segura", s1_d: "Paga con PSE, Nequi, tarjeta o PayPal. Confirmación inmediata.",
+                s2_t: "Recibe tu licencia", s2_d: "Tu clave de activación y link de descarga llegan al instante a tu correo.",
+                s3_t: "Instala y activa", s3_d: "Ejecuta el instalador, ingresa tu clave. Listo para usar en tu PC.",
+                s4_t: "Úsalo para siempre", s4_d: "Licencia vitalicia. Sin renovaciones, sin pagos recurrentes.",
+                dev_role: "Desarrollador · GWL Systems", dev_bio: "Ingeniero colombiano especializado en automatización de procesos con Python. Todas las aplicaciones están registradas ante la Dirección Nacional de Derecho de Autor (DNDA) de Colombia. Soporte directo del desarrollador vía correo electrónico.",
+                tag_dnda: "Registrado DNDA", trust_1: "Apps registradas DNDA", trust_2: "Procesamiento local", trust_3: "Plataforma principal", trust_4: "Precios en pesos",
+                brand_tag: "QUIÉNES SOMOS", brand_title: "Innovación que Transforma tu Productividad",
+                brand_p1: "Desarrollamos software adaptado a tus necesidades que transforma tus procesos documentales en experiencias más rápidas, seguras y alineadas con la nueva era de la productividad automatizada.",
+                brand_p2: "Somos un laboratorio digital de vanguardia enfocado en crear aplicaciones que combinan Inteligencia Artificial, Automatización Robótica de Procesos (RPA) y Análisis de Datos Avanzado. Nuestro objetivo: revolucionar la productividad empresarial y eliminar la carga de trabajo repetitivo.",
+                footer_desc: "Suite de herramientas de productividad desarrolladas por el Ing. Gustavo Walteros Larrotta. Software registrado ante la DNDA, Colombia.",
+                foot_prod: "Productos", foot_smart: "Familia SMART", foot_support: "Soporte", foot_docs: "Documentación", foot_guide: "Guía de Instalación", foot_ticket: "Ticket de Soporte", foot_privacy: "Política de Privacidad", foot_terms: "Términos de Servicio",
+                footer_copy: "© 2026 Ing. Gustavo Walteros Larrotta. Todos los derechos reservados. Bucaramanga, Colombia."
+            },
+            en: {
+                nav_products: "Products", nav_smart: "SMART Solutions", nav_how: "How It Works", nav_contact: "Contact", nav_cta: "View Products",
+                hero_badge: "4 APPLICATIONS AVAILABLE", hero_t1: "Software that ", hero_t2: "automates your work",
+                hero_sub: "Desktop tools built with Python. No subscriptions, no cloud, one-time payment. Designed for professionals in Colombia and Latin America.",
+                hero_cta1: "View Products & Pricing", hero_cta2: "Custom Solutions",
+                stat_apps: "Applications", stat_offline: "Offline", stat_subs: "Subscriptions", stat_license: "Lifetime License",
+                prod_tag: "SOFTWARE CATALOG", prod_title: "Choose your productivity tool", prod_sub: "One payment, lifetime license. All apps work offline.",
+                coupon_ph: "Coupon code...", coupon_btn: "Apply", coupon_ok: "✅ Coupon TUNALEMON applied! 10% discount",
+                tag_popular: "Most Popular", tag_new: "New", tag_pro: "Professional", tag_essential: "Essential",
+                vox_desc: "Converts audio files (MP3, WAV, M4A, OGG, AAC, FLAC, OPUS) to text and generates Word documents (.docx). Local processing with FFmpeg and transcription via Google Speech Recognition. Multilingual interface with secure licensing.",
+                vox_f1: "Automatic audio-to-text transcription", vox_f2: "Meeting minutes & Word document generation", vox_f3: "Speaker detection · 5+ languages", vox_f4: "Custom document templates", vox_f5: "Optimized for Windows 10 / 11",
+                inv_desc: "Generates complete file system inventories as Word documents. Iterative DFS directory scanning, hierarchical tree or flat list formats, alphabetical or natural numeric sorting. Cross-platform.",
+                inv_f1: "Unlimited depth DFS scanning", inv_f2: "Hierarchical tree or flat list format", inv_f3: "Alphabetical and natural numeric sorting", inv_f4: "Word export with full metadata", inv_f5: "Bilingual interface (ES / EN)",
+                topo_desc: "Desktop cartographic viewer. Loads KMZ, KML and GeoJSON on satellite maps. Detects polygon overlaps and gaps, measures distances and areas, generates SRTM elevation profiles. Exports to 4 formats.",
+                topo_f1: "Interactive satellite and topographic maps", topo_f2: "Geometric overlap and gap analysis", topo_f3: "Smoothed SRTM elevation profiles", topo_f4: "Export to GeoJSON, Shapefile, GPKG, KMZ", topo_f5: "4 languages (ES / EN / PT / FR)",
+                tueri_desc: "Parallel multi-folder backup using Robocopy. Pre-scan volume, real-time per-folder and global progress tracking, automatic reconnection on drive disconnect, and detailed session summary.",
+                tueri_f1: "Parallel multi-folder backup", tueri_f2: "Preserves attributes and timestamps", tueri_f3: "Automatic reconnection on disconnect", tueri_f4: "Real-time per-folder progress", tueri_f5: "Detailed session summary",
+                buy_btn: "Buy Now",
+                smart_tag: "ENTERPRISE SOLUTIONS", smart_t1: "The ", smart_t2: "SMART Family",
+                smart_sub: "Custom systems built for your business. Document automation, workflows and integration with your existing processes. Contact the developer directly.",
+                smart_cta: "Contact the Developer", smart_cta2: "Request a Quote",
+                sm1_t: "SmartDocs", sm1_d: "Automated corporate document generation with intelligent templates.",
+                sm2_t: "SmartReports", sm2_d: "Automated reports and analytics from multiple data sources.",
+                sm3_t: "SmartMail", sm3_d: "AI-powered email response automation and management.",
+                sm4_t: "Smart Custom", sm4_d: "Tailored solutions for any business workflow.",
+                how_tag: "SIMPLE PROCESS", how_title: "From purchase to productivity in minutes",
+                s1_t: "Secure purchase", s1_d: "Pay with PSE, Nequi, card or PayPal. Instant confirmation.",
+                s2_t: "Receive your license", s2_d: "Your activation key and download link arrive instantly to your email.",
+                s3_t: "Install & activate", s3_d: "Run the installer, enter your key. Ready to use on your PC.",
+                s4_t: "Use it forever", s4_d: "Lifetime license. No renewals, no recurring payments.",
+                dev_role: "Developer · GWL Systems", dev_bio: "Colombian engineer specialized in process automation with Python. All applications are registered with Colombia's National Copyright Office (DNDA). Direct developer support via email.",
+                tag_dnda: "DNDA Registered", trust_1: "DNDA registered apps", trust_2: "Local processing", trust_3: "Main platform", trust_4: "Prices in COP",
+                brand_tag: "ABOUT US", brand_title: "Innovation that Transforms Your Productivity",
+                brand_p1: "We develop software tailored to your needs that transforms your document processes into faster, safer experiences aligned with the new era of automated productivity.",
+                brand_p2: "We are a cutting-edge digital lab focused on building applications that combine Artificial Intelligence, Robotic Process Automation (RPA), and Advanced Data Analytics. Our goal: revolutionize enterprise productivity and eliminate repetitive workloads.",
+                footer_desc: "Productivity tool suite by Eng. Gustavo Walteros Larrotta. Software registered with DNDA, Colombia.",
+                foot_prod: "Products", foot_smart: "SMART Family", foot_support: "Support", foot_docs: "Documentation", foot_guide: "Installation Guide", foot_ticket: "Support Ticket", foot_privacy: "Privacy Policy", foot_terms: "Terms of Service",
+                footer_copy: "© 2026 Eng. Gustavo Walteros Larrotta. All rights reserved. Bucaramanga, Colombia."
+            }
+        };
+
+        let lang = 'es';
+
+        function toggleLang() {
+            lang = lang === 'es' ? 'en' : 'es';
+            document.getElementById('langFlag').textContent = lang === 'es' ? '🇪🇸' : '🇬🇧';
+            document.getElementById('langCode').textContent = lang.toUpperCase();
+            document.documentElement.lang = lang;
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const k = el.getAttribute('data-i18n');
+                if (T[lang] && T[lang][k]) el.textContent = T[lang][k];
+            });
+            document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+                const k = el.getAttribute('data-i18n-placeholder');
+                if (T[lang] && T[lang][k]) el.placeholder = T[lang][k];
+            });
+        }
+
+        window.addEventListener('scroll', () => {
+            document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 50);
+        });
+
+        function applyCoupon() {
+            if (document.getElementById('couponInput').value.toUpperCase() === 'TUNALEMON') {
+                document.getElementById('couponBox').style.display = 'none';
+                document.getElementById('couponOk').style.display = 'inline-block';
+                document.getElementById('priceVox').textContent = '$175.500';
+                document.getElementById('priceInv').textContent = '$89.100';
+                document.getElementById('priceTopo').textContent = '$225.000';
+                document.getElementById('priceTueri').textContent = '$108.000';
+            }
+        }
+        document.getElementById('couponInput').addEventListener('keypress', e => { if (e.key === 'Enter') applyCoupon(); });
+
+        const obs = new IntersectionObserver(entries => {
+            entries.forEach(e => { if (e.isIntersecting) { e.target.style.animation = 'fadeUp .6s ease-out forwards'; e.target.style.opacity = '1'; obs.unobserve(e.target); } });
+        }, { threshold: 0.08 });
+        document.querySelectorAll('.p-card, .smart-item, .step-card, .dev-card, .dev-stat').forEach(el => { el.style.opacity = '0'; obs.observe(el); });
+    </script>
+</body>
+
+</html>
