@@ -921,49 +921,105 @@
             color: var(--warm-accent)
         }
 
-        .smart-layout {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 3.5rem;
-            align-items: center
+        .smart-header {
+            text-align: center;
+            max-width: 700px;
+            margin: 0 auto 3rem
         }
 
-        .smart-grid {
+        .smart-grid-6 {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.25rem
         }
 
-        .smart-item {
-            padding: 1.25rem;
-            border-radius: var(--radius);
-            background: var(--bg-elevated);
+        .smart-card {
+            background: var(--bg-card);
             border: 1px solid var(--border);
-            transition: all .35s
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            transition: all .45s cubic-bezier(.23, 1, .32, 1);
+            position: relative;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px)
         }
 
-        .smart-item:hover {
-            background: rgba(147, 51, 234, .08);
-            border-color: rgba(147, 51, 234, .2);
-            transform: translateY(-4px)
+        .smart-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(147, 51, 234, .06), transparent);
+            transition: left .6s ease;
+            z-index: 1
         }
 
-        .smart-item .s-icon {
-            font-size: 24px;
-            margin-bottom: .5rem
+        .smart-card:hover::before {
+            left: 100%
         }
 
-        .smart-item h4 {
-            font-size: 14px;
+        .smart-card:hover {
+            transform: translateY(-8px);
+            border-color: var(--border-hover);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, .4), 0 0 30px rgba(147, 51, 234, .08)
+        }
+
+        .smart-card-icon {
+            height: 90px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            position: relative
+        }
+
+        .smart-card-icon::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 10%;
+            right: 10%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--border-hover), transparent)
+        }
+
+        .smart-card-body {
+            padding: 1.25rem 1.5rem 1.5rem
+        }
+
+        .smart-card h4 {
+            font-size: 1rem;
             font-weight: 700;
-            margin-bottom: 4px;
-            color: #fff
+            color: #fff;
+            margin-bottom: .4rem
         }
 
-        .smart-item p {
-            font-size: 12px;
-            color: var(--text-muted);
-            line-height: 1.5
+        .smart-card .smart-label {
+            display: inline-block;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: .5px;
+            text-transform: uppercase;
+            margin-bottom: .75rem;
+            padding: 3px 8px;
+            border-radius: 4px
+        }
+
+        .smart-card p {
+            font-size: 13px;
+            color: var(--text-secondary);
+            line-height: 1.7
+        }
+
+        .smart-cta-row {
+            text-align: center;
+            margin-top: 2.5rem;
+            display: flex;
+            gap: .75rem;
+            justify-content: center;
+            flex-wrap: wrap
         }
 
         .btn-smart {
@@ -1281,8 +1337,9 @@
                 gap: 1rem
             }
 
-            .smart-layout {
-                gap: 2.5rem
+            .smart-grid-6 {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1rem
             }
 
             .steps-grid {
@@ -1304,7 +1361,7 @@
                 grid-template-columns: 1fr
             }
 
-            .smart-layout,
+            .smart-grid-6,
             .dev-grid,
             .brand-layout {
                 grid-template-columns: 1fr
@@ -1451,12 +1508,18 @@
                 font-size: 14px
             }
 
-            .smart-grid {
-                grid-template-columns: 1fr
+            .smart-grid-6 {
+                grid-template-columns: 1fr;
+                gap: .75rem
             }
 
-            .smart-layout {
-                gap: 2rem
+            .smart-card-icon {
+                height: 70px;
+                font-size: 2rem
+            }
+
+            .smart-card-body {
+                padding: 1rem 1.25rem 1.25rem
             }
 
             .smart-section .section-sub {
@@ -1894,43 +1957,77 @@
     <!-- ==================== SMART FAMILY ==================== -->
     <section id="smart" class="smart-section bg-scene">
         <div class="section-inner">
-            <div class="smart-layout">
-                <div>
-                    <span class="section-tag mono" data-i18n="smart_tag">SOLUCIONES EMPRESARIALES</span>
-                    <h2 class="section-title"><span data-i18n="smart_t1">Familia </span><span
-                            class="text-gradient-purple" data-i18n="smart_t2">SMART</span></h2>
-                    <p class="section-sub" data-i18n="smart_sub">Sistemas personalizados a medida para tu empresa.
-                        Automatización de documentos, flujos de trabajo e integración con tus procesos. Contacta
-                        directamente al desarrollador.</p>
-                    <div style="margin-top:2rem;display:flex;gap:.75rem;flex-wrap:wrap">
-                        <a href="mailto:soporte.gwl@gmail.com" style="text-decoration:none"><button class="btn-smart"
-                                data-i18n="smart_cta">Contactar al Desarrollador</button></a>
-                        <button class="btn-smart-ghost" data-i18n="smart_cta2">Solicitar Cotización</button>
+            <div class="smart-header">
+                <span class="section-tag mono" data-i18n="smart_tag">SOLUCIONES EMPRESARIALES</span>
+                <h2 class="section-title"><span data-i18n="smart_t1">Familia </span><span class="text-gradient-purple" data-i18n="smart_t2">SMART</span></h2>
+                <p class="section-sub" style="margin:0 auto" data-i18n="smart_sub">Sistemas personalizados a medida para tu empresa. Automatización de documentos, flujos de trabajo e integración con tus procesos.</p>
+            </div>
+
+            <div class="smart-grid-6">
+                <!-- Smart Docs -->
+                <div class="smart-card">
+                    <div class="smart-card-icon" style="background:linear-gradient(135deg, rgba(30,64,175,.15), rgba(147,51,234,.1))">📝</div>
+                    <div class="smart-card-body">
+                        <h4 data-i18n="sm1_t">Smart Docs</h4>
+                        <span class="smart-label" style="background:var(--blue-light);color:#A78BFA" data-i18n="sm1_label">Documentos</span>
+                        <p data-i18n="sm1_d">Automatización avanzada de Word + Excel con Python. Genera contratos, informes y documentos masivos en segundos. Ideal para despachos legales, consultorías y empresas con alta carga documental.</p>
                     </div>
                 </div>
-                <div class="smart-grid">
-                    <div class="smart-item">
-                        <div class="s-icon">📄</div>
-                        <h4 data-i18n="sm1_t">SmartDocs</h4>
-                        <p data-i18n="sm1_d">Generación automatizada de documentos corporativos con plantillas
-                            inteligentes.</p>
-                    </div>
-                    <div class="smart-item">
-                        <div class="s-icon">📊</div>
-                        <h4 data-i18n="sm2_t">SmartReports</h4>
-                        <p data-i18n="sm2_d">Reportes y análisis automatizados desde múltiples fuentes de datos.</p>
-                    </div>
-                    <div class="smart-item">
-                        <div class="s-icon">📧</div>
-                        <h4 data-i18n="sm3_t">SmartMail</h4>
-                        <p data-i18n="sm3_d">Automatización de respuestas y gestión de correo con IA.</p>
-                    </div>
-                    <div class="smart-item">
-                        <div class="s-icon">⚙️</div>
-                        <h4 data-i18n="sm4_t">Smart Custom</h4>
-                        <p data-i18n="sm4_d">Soluciones a medida para cualquier flujo empresarial.</p>
+
+                <!-- Smart Contracts -->
+                <div class="smart-card">
+                    <div class="smart-card-icon" style="background:linear-gradient(135deg, rgba(147,51,234,.15), rgba(192,38,211,.1))">⚖️</div>
+                    <div class="smart-card-body">
+                        <h4 data-i18n="sm2_t">Smart Contracts</h4>
+                        <span class="smart-label" style="background:var(--purple-light);color:#C084FC" data-i18n="sm2_label">Legal</span>
+                        <p data-i18n="sm2_d">Módulo especializado para gestión de contratos y procesos de contratación. Reduce el tiempo de generación de documentos legales en un 90% con seguimiento de plazos y versiones.</p>
                     </div>
                 </div>
+
+                <!-- Smart HR Docs -->
+                <div class="smart-card">
+                    <div class="smart-card-icon" style="background:linear-gradient(135deg, rgba(16,185,129,.15), rgba(56,189,248,.1))">👥</div>
+                    <div class="smart-card-body">
+                        <h4 data-i18n="sm3_t">Smart HR Docs</h4>
+                        <span class="smart-label" style="background:var(--green-light);color:var(--green)" data-i18n="sm3_label">RRHH</span>
+                        <p data-i18n="sm3_d">Automatización de documentos de recursos humanos: contratos, certificaciones, actas y nombramientos. Perfecto para empresas con procesos de personal estandarizados.</p>
+                    </div>
+                </div>
+
+                <!-- Smart Finance Docs -->
+                <div class="smart-card">
+                    <div class="smart-card-icon" style="background:linear-gradient(135deg, rgba(245,158,11,.15), rgba(234,88,12,.1))">💰</div>
+                    <div class="smart-card-body">
+                        <h4 data-i18n="sm4_t">Smart Finance Docs</h4>
+                        <span class="smart-label" style="background:var(--amber-light);color:var(--amber)" data-i18n="sm4_label">Finanzas</span>
+                        <p data-i18n="sm4_d">Gestión automatizada de documentos financieros y presupuestales. Genera reportes, cotizaciones y planillas financieras con integración a sistemas contables.</p>
+                    </div>
+                </div>
+
+                <!-- Smart Citizen Docs -->
+                <div class="smart-card">
+                    <div class="smart-card-icon" style="background:linear-gradient(135deg, rgba(220,38,38,.12), rgba(234,88,12,.1))">🏛️</div>
+                    <div class="smart-card-body">
+                        <h4 data-i18n="sm5_t">Smart Citizen Docs</h4>
+                        <span class="smart-label" style="background:var(--red-light);color:var(--red)" data-i18n="sm5_label">Gobierno</span>
+                        <p data-i18n="sm5_d">Solución para atención ciudadana y correspondencia oficial. Genera automáticamente respuestas a PQRS, oficios, resoluciones y citaciones para entidades públicas.</p>
+                    </div>
+                </div>
+
+                <!-- Asistente Emails IA -->
+                <div class="smart-card">
+                    <div class="smart-card-icon" style="background:linear-gradient(135deg, rgba(192,38,211,.15), rgba(147,51,234,.1))">📧</div>
+                    <div class="smart-card-body">
+                        <h4 data-i18n="sm6_t">Asistente Emails IA</h4>
+                        <span class="smart-label" style="background:var(--purple-light);color:var(--warm-accent)" data-i18n="sm6_label">IA</span>
+                        <p data-i18n="sm6_d">Organiza, redacta y clasifica correos automáticamente con soporte de IA. Respuestas inteligentes, filtrado avanzado y gestión de bandejas de entrada para equipos de soporte y ventas.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="smart-cta-row">
+                <a href="mailto:soporte.gwl@gmail.com" style="text-decoration:none"><button class="btn-smart" data-i18n="smart_cta">Contactar al Desarrollador</button></a>
+                <button class="btn-smart-ghost" data-i18n="smart_cta2">Solicitar Cotización</button>
             </div>
         </div>
     </section>
@@ -2086,10 +2183,12 @@
                 smart_tag: "SOLUCIONES EMPRESARIALES", smart_t1: "Familia ", smart_t2: "SMART",
                 smart_sub: "Sistemas personalizados a medida para tu empresa. Automatización de documentos, flujos de trabajo e integración con tus procesos. Contacta directamente al desarrollador.",
                 smart_cta: "Contactar al Desarrollador", smart_cta2: "Solicitar Cotización",
-                sm1_t: "SmartDocs", sm1_d: "Generación automatizada de documentos corporativos con plantillas inteligentes.",
-                sm2_t: "SmartReports", sm2_d: "Reportes y análisis automatizados desde múltiples fuentes de datos.",
-                sm3_t: "SmartMail", sm3_d: "Automatización de respuestas y gestión de correo con IA.",
-                sm4_t: "Smart Custom", sm4_d: "Soluciones a medida para cualquier flujo empresarial.",
+                sm1_t: "Smart Docs", sm1_d: "Automatización avanzada de Word + Excel con Python. Genera contratos, informes y documentos masivos en segundos. Ideal para despachos legales, consultorías y empresas con alta carga documental.", sm1_label: "Documentos",
+                sm2_t: "Smart Contracts", sm2_d: "Módulo especializado para gestión de contratos y procesos de contratación. Reduce el tiempo de generación de documentos legales en un 90% con seguimiento de plazos y versiones.", sm2_label: "Legal",
+                sm3_t: "Smart HR Docs", sm3_d: "Automatización de documentos de recursos humanos: contratos, certificaciones, actas y nombramientos. Perfecto para empresas con procesos de personal estandarizados.", sm3_label: "RRHH",
+                sm4_t: "Smart Finance Docs", sm4_d: "Gestión automatizada de documentos financieros y presupuestales. Genera reportes, cotizaciones y planillas financieras con integración a sistemas contables.", sm4_label: "Finanzas",
+                sm5_t: "Smart Citizen Docs", sm5_d: "Solución para atención ciudadana y correspondencia oficial. Genera automáticamente respuestas a PQRS, oficios, resoluciones y citaciones para entidades públicas.", sm5_label: "Gobierno",
+                sm6_t: "Asistente Emails IA", sm6_d: "Organiza, redacta y clasifica correos automáticamente con soporte de IA. Respuestas inteligentes, filtrado avanzado y gestión de bandejas de entrada para equipos de soporte y ventas.", sm6_label: "IA",
                 how_tag: "PROCESO SIMPLE", how_title: "De la compra a la productividad en minutos",
                 s1_t: "Compra segura", s1_d: "Paga con PSE, Nequi, tarjeta o PayPal. Confirmación inmediata.",
                 s2_t: "Recibe tu licencia", s2_d: "Tu clave de activación y link de descarga llegan al instante a tu correo.",
@@ -2125,10 +2224,12 @@
                 smart_tag: "ENTERPRISE SOLUTIONS", smart_t1: "The ", smart_t2: "SMART Family",
                 smart_sub: "Custom systems built for your business. Document automation, workflows and integration with your existing processes. Contact the developer directly.",
                 smart_cta: "Contact the Developer", smart_cta2: "Request a Quote",
-                sm1_t: "SmartDocs", sm1_d: "Automated corporate document generation with intelligent templates.",
-                sm2_t: "SmartReports", sm2_d: "Automated reports and analytics from multiple data sources.",
-                sm3_t: "SmartMail", sm3_d: "AI-powered email response automation and management.",
-                sm4_t: "Smart Custom", sm4_d: "Tailored solutions for any business workflow.",
+                sm1_t: "Smart Docs", sm1_d: "Advanced Word + Excel automation with Python. Generate contracts, reports and bulk documents in seconds. Ideal for law firms, consultancies and document-heavy businesses.", sm1_label: "Documents",
+                sm2_t: "Smart Contracts", sm2_d: "Specialized module for contract management and hiring processes. Reduces legal document generation time by 90% with deadline and version tracking.", sm2_label: "Legal",
+                sm3_t: "Smart HR Docs", sm3_d: "HR document automation: contracts, certifications, minutes and appointments. Perfect for companies with standardized personnel processes.", sm3_label: "HR",
+                sm4_t: "Smart Finance Docs", sm4_d: "Automated management of financial and budget documents. Generate reports, quotes and financial spreadsheets with accounting system integration.", sm4_label: "Finance",
+                sm5_t: "Smart Citizen Docs", sm5_d: "Solution for citizen services and official correspondence. Automatically generates responses to PQRS, official letters, resolutions and summons for public entities.", sm5_label: "Government",
+                sm6_t: "AI Email Assistant", sm6_d: "Organize, draft and classify emails automatically with AI support. Smart replies, advanced filtering and inbox management for support and sales teams.", sm6_label: "AI",
                 how_tag: "SIMPLE PROCESS", how_title: "From purchase to productivity in minutes",
                 s1_t: "Secure purchase", s1_d: "Pay with PSE, Nequi, card or PayPal. Instant confirmation.",
                 s2_t: "Receive your license", s2_d: "Your activation key and download link arrive instantly to your email.",
@@ -2181,7 +2282,7 @@
         const obs = new IntersectionObserver(entries => {
             entries.forEach(e => { if (e.isIntersecting) { e.target.style.animation = 'fadeUp .6s ease-out forwards'; e.target.style.opacity = '1'; obs.unobserve(e.target); } });
         }, { threshold: 0.08 });
-        document.querySelectorAll('.p-card, .smart-item, .step-card, .dev-card, .dev-stat').forEach(el => { el.style.opacity = '0'; obs.observe(el); });
+        document.querySelectorAll('.p-card, .smart-card, .step-card, .dev-card, .dev-stat').forEach(el => { el.style.opacity = '0'; obs.observe(el); });
     </script>
 </body>
 
